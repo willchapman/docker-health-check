@@ -24,22 +24,20 @@ public class Main {
             System.exit(1);
         }
 
-        String configFilePath = System.getenv("HEALTH_CHECK_CONFIG");
-        if (configFilePath == null)
-            configFilePath = new File("config/checks.properties").getAbsolutePath();
+
 
         HealthChecks healthChecks = null;
         try {
-            logger.info("Loading configuration: " + configFilePath);
+            logger.info("Loading configuration: " + Environment.HEALTH_CHECK_CONFIG);
             Properties config = new Properties();
-            config.load(new FileReader(configFilePath));
+            config.load(new FileReader(Environment.HEALTH_CHECK_CONFIG));
             healthChecks = loadHealthChecks(config);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-2);
         }
 
-        HealthCheckThread healthCheckThread = new HealthCheckThread(30_000L, healthChecks, Main::doRunServer);
+        HealthCheckThread healthCheckThread = new HealthCheckThread(Environment.HEALTH_CHECK_INTERVAL, healthChecks, Main::doRunServer);
         healthCheckThread.setDaemon(true);
         healthCheckThread.start();
         try {
@@ -58,7 +56,6 @@ public class Main {
      * @param healthCheckThread
      */
     private static void doRunServer(HealthCheckThread healthCheckThread) {
-
         Thread serverThread = new Thread(() -> doRunWebServer(healthCheckThread));
         serverThread.start();
     }
@@ -71,7 +68,7 @@ public class Main {
      */
     private static void doRunWebServer(HealthCheckThread healthCheckThread) {
         try {
-            int port = 80;
+            int port = Environment.HEALTH_CHECK_WEB_PORT;
             ServerSocket serverConnect = new ServerSocket(port);
             logger.info("Starting health-check on port " + port);
             // we listen until user halts server execution
