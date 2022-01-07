@@ -14,7 +14,7 @@ public class Environment {
     /**
      * Where the pull the configuration for the health checks ( defaults to config/checks.properties )
      */
-    public static final String HEALTH_CHECK_CONFIG = getString("HEALTH_CHECK_CONFIG", new File("config/check.properties").getAbsolutePath());
+    public static final String HEALTH_CHECK_CONFIG = getString("HEALTH_CHECK_CONFIG", new File("config/checks.properties").getAbsolutePath());
 
     /**
      * What port to listen on for the health checks ( defaults to 80 )

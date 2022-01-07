@@ -107,7 +107,7 @@ public class Main {
     private static AbstractCheck createHealthCHeck(String clsName, String configString) {
         try {
             Class<? > aClass = Class.forName(clsName);
-            Object o = aClass.newInstance();
+            Object o = aClass.getDeclaredConstructor().newInstance();
             if(o instanceof AbstractCheck) {
                 AbstractCheck abstractCheck = (AbstractCheck) o;
                 abstractCheck.loadConfiguration(configString);
