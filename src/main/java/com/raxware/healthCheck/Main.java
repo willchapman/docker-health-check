@@ -107,7 +107,17 @@ public class Main {
     private static AbstractCheck createHealthCHeck(String clsName, String configString) {
         try {
             Class<? > aClass = Class.forName(clsName);
+
+            //
+            // Check before we instantiate the class since it could be a security issue to execute the code in the
+            // constructor before we do the type check
+            if(!AbstractCheck.class.isAssignableFrom(aClass)) {
+                logger.warning("Type pre-check failed - not an AbstractCheck class - "+aClass.getName());
+                return null;
+            }
+
             Object o = aClass.getDeclaredConstructor().newInstance();
+            //todo: We should no longer need this due to the type check above
             if(o instanceof AbstractCheck) {
                 AbstractCheck abstractCheck = (AbstractCheck) o;
                 abstractCheck.loadConfiguration(configString);
